@@ -28,6 +28,17 @@ reminder_parser = subparsers.add_parser('reminder', help='Manage reminders')
 reminder_parser.add_argument('action', choices=['start', 'stop', 'time'], help='Reminder action')
 reminder_parser.add_argument('times', nargs='*', help='Reminder times (e.g., 1m, 15m)')
 
+# Remove task command
+rm_parser = subparsers.add_parser('rm', help='Remove a task')
+rm_parser.add_argument('task_id', type=str, help='ID of the task to remove')
+
+# Update task command
+update_parser = subparsers.add_parser('update', help='Update a task')
+update_parser.add_argument('task_id', type=str, help='ID of the task to update')
+update_parser.add_argument('-s', '--status', type=str, help='New status for the task')
+update_parser.add_argument('-p', '--priority', type=str, help='New priority for the task')
+update_parser.add_argument('-d', '--due', type=str, help='New due time for the task')
+
 # Task storage
 TASK_DB = os.path.expanduser('~/.tudu_tasks.db')
 
@@ -81,6 +92,29 @@ def start_reminder(times):
     # Example implementation for starting reminders
     print(f"Starting reminders at: {', '.join(times)}")
 
+def remove_task(task_id):
+    with shelve.open(TASK_DB) as db:
+        if task_id in db:
+            del db[task_id]
+            print(f"Task with ID {task_id} removed.")
+        else:
+            print(f"No task found with ID {task_id}.")
+
+def update_task(task_id, status=None, priority=None, due=None):
+    with shelve.open(TASK_DB) as db:
+        if task_id in db:
+            task = db[task_id]
+            if status:
+                task['status'] = status
+            if priority:
+                task['priority'] = priority
+            if due:
+                task['due'] = datetime.now() + parse_due_time(due)
+            db[task_id] = task
+            print(f"Task with ID {task_id} updated.")
+        else:
+            print(f"No task found with ID {task_id}.")
+
 def main():
     # Parse arguments
     args = parser.parse_args()
@@ -90,6 +124,10 @@ def main():
         add_task(args.task, args.status, args.priority, args.due)
     elif args.command == 'ls':
         list_tasks(args.status, args.priority)
+    elif args.command == 'rm':
+        remove_task(args.task_id)
+    elif args.command == 'update':
+        update_task(args.task_id, args.status, args.priority, args.due)
     elif args.command == 'reminder':
         if args.action == 'start':
             start_reminder(args.times)

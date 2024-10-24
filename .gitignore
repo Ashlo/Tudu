@@ -1,7 +1,0 @@
-# Ignore the task database file
-~/.tudu_tasks.db
-
-# Ignore all .db files in the project directory
-*.db
-
-

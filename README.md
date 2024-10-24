@@ -24,16 +24,31 @@ Once installed, you can use the `tudu` command to manage your tasks. Below are s
 
 ### Add a New Task
 
+```bash
+tudu new "Buy groceries" -s todo -p high -d 2h
+```
 
 ### List Tasks
+
+```bash
+tudu ls
+```
 
 List all tasks:
 
 ### Remove a Task
 
+```bash
+tudu rm 1
+```
+
 Remove a task by its ID:
 
 ### Set a Reminder
+
+```bash
+tudu reminder start 1h
+```
 
 Start reminders for tasks at specified intervals:
 

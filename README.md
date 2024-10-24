@@ -14,6 +14,9 @@ Tudu is a simple command-line task management application that allows you to cre
 
 To install Tudu, you need to have Python and pip installed on your system. You can then install Tudu using the following command:
 
+```bash
+pip install .
+```
 
 ## Usage
 
